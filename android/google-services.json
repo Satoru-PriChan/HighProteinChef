@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1094366148865",
+    "project_id": "highproteinchef-4f9ec",
+    "storage_bucket": "highproteinchef-4f9ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094366148865:android:52c96f89081ccceb6f0300",
+        "android_client_info": {
+          "package_name": "jp.yamazaki.kento.high_protein_chef.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxAt8G1z--KfZBTRi98_hTrq6Lam1gpN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
