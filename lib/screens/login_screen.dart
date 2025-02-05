@@ -55,6 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               TextField(
                 controller: passwordController,
+                obscureText: true,
+                enableSuggestions: false,
+                autocorrect: false,
                 decoration: InputDecoration(
                   labelText: 'Password',
                 ),
