@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:high_protein_chef/providers/auth_provider.dart' as Auth;
-import 'package:high_protein_chef/screens/register_screen.dart';
 import 'package:high_protein_chef/routers/app_router.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +14,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final _emailFormKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
+  bool _isEmailValid = false;
+  bool _isPasswordValid = false;
+
   User? previousUser; 
 
   @override
@@ -42,45 +46,79 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<Auth.AuthProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Login"),),
+      appBar: AppBar(title: const Text("Login"),),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: "email",
+            Form(
+              key: _emailFormKey,
+              child: TextFormField( 
+                controller: emailController,
+                onChanged: (value) {
+                  setState(() {
+                    _isEmailValid = _emailFormKey.currentState?.validate() ?? _isEmailValid;
+                  });
+                },
+                validator: (value) {
+                  if (authProvider.isValidEmail(value ?? "")) {
+                    return null;
+                  } else {
+                    return "This is not a valid email";
+                  }
+                }, 
+                decoration: const InputDecoration(
+                  labelText: "email",
+                  ),
                 ),
-              ),
-              TextField(
+            ),
+            Form(
+              key: _passwordFormKey,
+              child: TextFormField(
                 controller: passwordController,
                 obscureText: true,
                 enableSuggestions: false,
                 autocorrect: false,
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  setState(() {
+                    _isPasswordValid = _passwordFormKey.currentState?.validate() ?? _isPasswordValid;  
+                  });
+                },
+                validator: (value) {
+                  if (authProvider.isValidPassword(value ?? "")) {
+                    return null;
+                  } else {
+                    return "At least an uppercase, a lowercase, a numeric and a special character.";
+                  }
+                },
+                decoration: const InputDecoration(
                   labelText: 'Password',
                 ),
               ),
-              SizedBox(height: 16),
-              authProvider.isLoading 
-                ? CircularProgressIndicator()
-                : ElevatedButton(
+            ),
+            const SizedBox(height: 16),
+
+            authProvider.isLoading 
+              ? const CircularProgressIndicator()
+              : _isEmailValid && _isPasswordValid ? 
+                ElevatedButton(
                   onPressed: () {
                     authProvider.login(emailController.text, passwordController.text);
                   }, 
-                  child: Text("Login"),
-                  ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context, 
-                      "/register"
-                    );
-                  }, 
-                  child: Text("Register")
+                  child: const Text("Login"),
                 )
-            
+               : 
+                const Text("Login", style: TextStyle(color: Colors.grey),),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context, 
+                    "/register"
+                  );
+                }, 
+                child: const Text("Register")
+              )
           ],
         )
         ),
