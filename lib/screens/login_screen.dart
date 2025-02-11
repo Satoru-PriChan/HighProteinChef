@@ -18,8 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFormKey = GlobalKey<FormState>();
   bool _isEmailValid = false;
   bool _isPasswordValid = false;
-
   User? previousUser; 
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               key: _passwordFormKey,
               child: TextFormField(
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !_showPassword,
                 enableSuggestions: false,
                 autocorrect: false,
                 onChanged: (value) {
@@ -91,8 +91,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     return "Uppercase, Lowercase, Numeric, Special character";
                   }
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Password',
+                decoration: InputDecoration(
+                  labelText: "Password", 
+                  suffixIcon: IconButton(
+                    icon: _showPassword ?
+                      const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
+                      onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword; 
+                      });
+                      },
+                  )
                 ),
               ),
             ),

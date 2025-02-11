@@ -19,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordFormKey = GlobalKey<FormState>();
   bool _isEmailValid = false;
   bool _isPasswordValid = false;
+  bool _showPassword = false;
 
   @override
   void initState() {
@@ -45,7 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final authProvider = Provider.of<Auth.AuthProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("Register")),
+      appBar: AppBar(title: const Text("Register")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -66,14 +67,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return "This is not a valid email";
                   }
                 }, 
-                decoration: InputDecoration(labelText: "Email"),
+                decoration: const InputDecoration(labelText: "Email"),
                 ),
             ),
               Form(
                 key: _passwordFormKey,
                 child: TextFormField(
                   controller: passwordController,
-                  obscureText: true,
+                  obscureText: !_showPassword,
                   enableSuggestions: false,
                   autocorrect: false,
                   onChanged: (value) {
@@ -88,12 +89,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return "Uppercase, Lowercase, Numeric, Special character";
                     }
                   },
-                  decoration: InputDecoration(labelText: "Password"),
+                  decoration: InputDecoration(
+                    labelText: "Password", 
+                    suffixIcon: IconButton(
+                      icon: _showPassword ?
+                        const Icon(Icons.visibility)
+                       : const Icon(Icons.visibility_off),
+                       onPressed: () {
+                        setState(() {
+                         _showPassword = !_showPassword; 
+                        });
+                       },
+                    )
+                  ),
                 ),
               ),
-              SizedBox(height: 16,),
+              const SizedBox(height: 16,),
               authProvider.isLoading 
-              ? CircularProgressIndicator()
+              ? const CircularProgressIndicator()
               : _isEmailValid && _isPasswordValid 
                 ?
                 ElevatedButton(
@@ -103,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       passwordController.text
                     );
                   }, 
-                  child: Text("Register")
+                  child: const Text("Register")
                 )
                 :
                 const Text("Register", style: TextStyle(color: Colors.grey),),
