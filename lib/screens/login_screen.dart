@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (authProvider.isValidPassword(value ?? "")) {
                     return null;
                   } else {
-                    return "At least an uppercase, a lowercase, a numeric and a special character.";
+                    return "Uppercase, Lowercase, Numeric, Special character";
                   }
                 },
                 decoration: const InputDecoration(
