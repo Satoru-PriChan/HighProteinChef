@@ -15,6 +15,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   User? previousUser; 
+  final _emailFormKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
+  bool _isEmailValid = false;
+  bool _isPasswordValid = false;
 
   @override
   void initState() {
@@ -46,29 +50,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: "Email"),
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(labelText: "Password"),
+            Form(
+              key: _emailFormKey,
+              child: TextFormField(
+                controller: emailController,
+                onChanged: (value) {
+                  setState(() {
+                    _isEmailValid = _emailFormKey.currentState?.validate() ?? _isEmailValid;
+                  });
+                },
+                validator: (value) {
+                  if (authProvider.isValidEmail(value ?? "")) {
+                    return null;
+                  } else {
+                    return "This is not a valid email";
+                  }
+                }, 
+                decoration: InputDecoration(labelText: "Email"),
+                ),
+            ),
+              Form(
+                key: _passwordFormKey,
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  onChanged: (value) {
+                    setState(() {
+                      _isPasswordValid = _passwordFormKey.currentState?.validate() ?? _isPasswordValid;  
+                    });
+                  },
+                  validator: (value) {
+                    if (authProvider.isValidPassword(value ?? "")) {
+                      return null;
+                    } else {
+                      return "Uppercase, Lowercase, Numeric, Special character";
+                    }
+                  },
+                  decoration: InputDecoration(labelText: "Password"),
+                ),
               ),
               SizedBox(height: 16,),
               authProvider.isLoading 
               ? CircularProgressIndicator()
-              : ElevatedButton(
-                onPressed: () {
-                  authProvider.register(
-                    emailController.text, 
-                    passwordController.text
-                  );
-                }, 
-                child: Text("Register")
-              )
+              : _isEmailValid && _isPasswordValid 
+                ?
+                ElevatedButton(
+                  onPressed: () {
+                    authProvider.register(
+                      emailController.text, 
+                      passwordController.text
+                    );
+                  }, 
+                  child: Text("Register")
+                )
+                :
+                const Text("Register", style: TextStyle(color: Colors.grey),),
           ],
         )
         )
