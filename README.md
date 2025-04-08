@@ -7,6 +7,12 @@ A basic Flutter project with:
 - Displying a list of recipies
 - Favorite recipes
 
+# System Architecture
+
+## Sequence Diagram
+
+![System Sequence Diagram](assets/sequence_diagram.png)
+
 # Screenshots
 
 |  |    |     |     |     |
